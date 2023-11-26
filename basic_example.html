@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>BLE test</title>
+<meta name="author" content="Chris Petrich" />
+</head>
+<body>
+<h1>BRIO Smart Tech Sound example for Chrome and Edge</h1>
+<button onclick="connectBLE()">Click to Connect to Train and Start Driving</button>
+<script>
+const serviceUUID = "b11b0001-bf9b-4a20-ba07-9218fec577d7";
+const commandCharacteristicUUID = "b11b0002-bf9b-4a20-ba07-9218fec577d7";
+function connectBLE() {
+  navigator.bluetooth.requestDevice(
+    { filters: [{ services: [serviceUUID] }] })
+    .then(device => device.gatt.connect())
+    .then(server => server.getPrimaryService(serviceUUID))
+    .then(service => service.getCharacteristic(commandCharacteristicUUID))
+    .then(characteristic => characteristic.writeValue( new Uint8Array([0xaa,0x02,0x01,0x08,0xf5]) ));
+}
+</script>
+</body>
+</html>
