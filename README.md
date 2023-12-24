@@ -2,7 +2,7 @@
 
 ```
 Notes on BLE communication with BRIO Smart Tech Sound train
-Author: Chris Petrich, 26 Nov 2023.
+Author: Chris Petrich, 25 Dec 2023.
 License: CC-BY, https://creativecommons.org/licenses/by/4.0/
 This repository is not affiliated with BRIO.
 ```
@@ -79,25 +79,36 @@ The **first** notification when passing through an Action Tunnel is:
 
 | Action Tunnel               | First Notification |
 | --------------------------- | ------------------ |
-| "stop" from forward         | `08:81:02:00:00:<eff1>:91:3a:03` |
-| "stop" from backward        | `08:81:02:00:00:ef:0f:00:0f` |
-| "change direction"          | `08:81:03:00:00:ef:0f:00:0f` |
-| "break" down from forward   | `08:81:07:40:00:<eff2>:6f:31:20` |
-| "break" down from backward  | `08:81:07:40:00:<eff2>:6f:31:30` |
-| "fix" without repair        | `08:81:0c:00:00:<eff3>:f9:9a:<speed>` |
-| "fix" with repair, forward  | `08:81:0c:00:00:ef:0f:00:03` |
-| "fix" with repair, backward | `08:81:0c:00:00:ef:0f:00:0f` |
+| "Stop" from forward         | `08:81:02:00:00:<eff1>:91:3a:03` |
+| "Stop" from backward        | `08:81:02:00:00:ef:0f:00:0f` |
+| "Change direction"          | `08:81:03:00:00:ef:0f:00:0f` |
+| "Break" down from forward   | `08:81:07:40:00:<eff2>:6f:31:20` |
+| "Break" down from backward  | `08:81:07:40:00:<eff2>:6f:31:30` |
+| "Fix" without repair        | `08:81:0c:00:00:<eff3>:f9:9a:<speed>` |
+| "Fix" with repair, forward  | `08:81:0c:00:00:ef:0f:00:03` |
+| "Fix" with repair, backward | `08:81:0c:00:00:ef:0f:00:0f` |
 | double tunnel, top          | `08:81:25:00:00:ef:df:aa:<speed>` |
 | "sound" (orange)            | `08:81:39:00:00:87:01:3a:<speed>` |
+| "Train Service Station", switch, forward   | `08:81:4d:00:00:ef:df:aa:03` |
+| "Train Service Station", switch, backward  | `08:81:4d:00:00:ef:3f:3a:13` |
+| "Train Service Station", washing, forward  | `08:81:4e:00:00:ef:df:aa:03` |
+| "Train Service Station", washing, backward | `08:81:4e:00:00:ef:0f:00:0f` |
+| "Train Service Station", repair, forward   | `08:81:4f:00:00:ef:df:aa:03` |
+| "Train Service Station", repair, backward  | `08:81:4f:00:00:ef:0f:00:0f` |
+| "Rescue", forward  | `08:81:54:00:00:ef:df:aa:03` |
+| "Rescue", backward | `08:81:54:00:00:ef:00:00:03` |
+
+The fith byte (`0x00` in all examples above) is a sequence number whenever
+multiple notifications are emitted.
 
 Action tunnel notifications are sent only if the train is in motion.
 
-Apparently, notifications gets sent after the actual action has already been
+Apparently, notifications get sent after the actual action has already been
 initiated by the train, i.e. it does not seem to be possible to *cleanly*
 override the pre-programmed behavior by sending BLE commands (there may be
 train jerking and aborted sounds). Sending a command in response to a
 notification from an Action Tunnel may cause the train to detect the Action
-Tunnel again, leading to loop that lasts until the train is out of range
+Tunnel again, leading to a loop that lasts until the train is out of range
 of the tunnel.
 
 ## Examples
