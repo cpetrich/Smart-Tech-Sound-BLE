@@ -97,7 +97,7 @@ The **first** notification when passing through an Action Tunnel is:
 | "Fix" with repair, forward  | `08:81:0c:00:00:ef:0f:00:03` |
 | "Fix" with repair, backward | `08:81:0c:00:00:ef:0f:00:0f` |
 | double tunnel, top          | `08:81:25:00:00:ef:df:aa:<speed>` |
-| "sound" (orange)            | `08:81:39:00:00:87:01:3a:<speed>` |
+| "Sound" (orange)            | `08:81:39:00:00:87:01:3a:<speed>` |
 | "Train Service Station", switch, forward   | `08:81:4d:00:00:ef:df:aa:03` |
 | "Train Service Station", switch, backward  | `08:81:4d:00:00:ef:3f:3a:13` |
 | "Train Service Station", washing, forward  | `08:81:4e:00:00:ef:df:aa:03` |
@@ -108,7 +108,8 @@ The **first** notification when passing through an Action Tunnel is:
 | "Rescue", backward | `08:81:54:00:00:ef:00:00:03` |
 
 The fith byte (`0x00` in all examples above) is a sequence number whenever
-multiple notifications are emitted.
+multiple notifications are emitted. The train action, number of notifications,
+and the values from the sixth byte onward depend on the firmware version.
 
 Action tunnel notifications are sent only if the train is in motion.
 
