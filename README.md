@@ -73,6 +73,8 @@ The sound effect themes are coded depending on context:
 | Horn      | `0xf2`  | `0x17` | `0x1f` | `0x13` | `0x1b` |
 | Spaceship | `0xf3`  | `0x18` | `0x20` | `0x14` | `0x1c` |
 
+Custom sound recordings are coded as, for example, `0x81` or `0x82` in `<eff1>`.
+
 The **first** notification message after pressing a button on
 the train is:
 
