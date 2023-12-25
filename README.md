@@ -31,7 +31,7 @@ and within this, the characteristic for commands to the train is
 the characteristic for notifications from the train back to the BLE
 client is `b11b0003-bf9b-4a20-ba07-9218fec577d7`.
 
-BLE commands and notifications are a sequence of unsigned 8-bit integers
+BLE commands and notifications are a string of unsigned 8-bit integers
 framed by start byte `0xAA` and single-byte checksum, `<C>`, at the end. The
 checksum is calculated from the sum of the bytes of the command or notification
 (i.e. without the start byte `0xAA`) as follows:
@@ -41,13 +41,20 @@ checksum is calculated from the sum of the bytes of the command or notification
 Unknown commands or commands with checksum errors are silently ignored (i.e.
 no notifications are sent).
 
-Among the list of recognized commands is
+Among the list of recognized commands are
 
 | Command             | Meaning |
 | ------------------- | ------- |
 | `02:01:<speed>`     | Set speed of train and play appropriate light and sound effects. |
 | `03:56:AA:<effect>` | Stop train, set sound effect theme, and play sound. |
-| `03:52:<b1>:<b2>`   | Unknown. |
+| `03:52:<b1>:<b2>`   | App sends 5 startup messages with `<b1>`=`M`,`T`,`Q`,`W`,`X`, respectively, and `<b2>=0x00`. |
+| `06:06:00:00:<MSB>:<LSB>` | Start binary data transfer for firmware update. |
+| `1x:50:<id>:<seq>:<type>:<payload>` | x={`0`,`6`,`c`}, `<payload>`=18 or 24 bytes. Firmware parameters of preceeding binary transfer. |
+| `02:0a:0f` | End of firmware update. |
+
+Commands are sent as *Write Requests* (`CYBLE_EVT_GATTS_WRITE_REQ`),
+except the `1x:50:...` commands and binary data, which are *Write Commands* (`CYBLE_EVT_GATTS_WRITE_CMD_REQ`).
+The train will send a notification in return to each command (i.e. not for binary data).
 
 Train speed, `<speed>`, is coded as 
 
@@ -115,8 +122,8 @@ of the tunnel.
 
 ### BLE Commands
 
-| Sequence | Meaning |
-| -------- | ------- |
+| Byte String | Meaning |
+| ----------- | ------- |
 | `aa:02:01:08:f5` | Full speed forward |
 | `aa:02:01:02:fb` | Slowly forward |
 | `aa:02:01:00:fd` | Stop the train |
